@@ -39,6 +39,7 @@ Base 是目前基于 OP Stack 构建的增长最快的 Layer 2 网络之一。
 *   **优势**:
     *   **低费率**: 单笔转账 Gas 费通常维持在 $0.01 以下。
     *   **生态协同**: 依托 Coinbase 庞大的用户群与法币通道，USDC 在链上的原生流动性极佳。
+    *   **USDT 支持**: 虽然 Coinbase 主推 USDC，但这并不意味着 Base 不支持 USDT。Base 网络已有原生 USDT，但流动性和应用场景主要围绕 USDC 展开。若业务强制依赖 USDT，需注意资金深度。
 *   **适用场景**: 消费级应用、微支付（Micropayments）、跨境电商结算。
 
 ### 2.2 Polygon PoS
@@ -49,6 +50,7 @@ Base 是目前基于 OP Stack 构建的增长最快的 Layer 2 网络之一。
 *   **优势**:
     *   **兼容性**: 几乎所有主流中心化交易所（CEX）与钱包均原生支持 Polygon 网络，用户资金迁徙成本极低。
     *   **生态成熟**: 拥有大量 Web2 企业（Stripe, Reddit 等）的集成案例验证。
+    *   **USDT 优势**: Polygon 是 USDT 最活跃的网络之一，拥有极深的 USDT 流动性。如果你的用户习惯持有 USDT 而非 USDC，Polygon 是极佳选择。
 *   **适用场景**: 需要最大化兼容性、覆盖存量 Web3 用户的传统业务转型。
 
 ### 2.3 Arbitrum One
@@ -58,6 +60,7 @@ Base 是目前基于 OP Stack 构建的增长最快的 Layer 2 网络之一。
 *   **技术特点**: 拥有成熟的欺诈证明（Fraud Proofs）机制，安全性经过长期市场验证。
 *   **优势**:
     *   **DeFi 可组合性**: 拥有最繁荣的 DeFi 生态。如果支付资金后续涉及复杂的链上理财或兑换操作，Arbitrum 提供了最丰富的协议支持。
+    *   **USDT 状态**: 支持原生 USDT，流动性充足，适合大额资金的 USDT 结算。
 *   **适用场景**: 大额资金支付、金融衍生品交易、需要与 DeFi 协议深度交互的业务。
 
 ### 2.4 2026年最新费用参考 (Reference Fees)
@@ -67,6 +70,7 @@ Base 是目前基于 OP Stack 构建的增长最快的 Layer 2 网络之一。
 | 核心指标 | Base (强烈推荐)  | Polygon PoS  | Arbitrum One  |
 | :--- | :--- | :--- | :--- |
 | **转账成本 (Gas)** | **$0.002**  | ~$0.015 (贵 ~7 倍) | ~$0.03 (贵 ~15 倍) |
+| **首选稳定币** | **USDC** (Coinbase 原生) | **USDT** (流动性之王) / USDC | USDC / USDT (均衡) |
 | **出金磨损** | **几乎为 0**  | $1 - $3 (需跨链/交易所) | $1 - $5 (需跨链/交易所) |
 | **资金处理效率** | **T+0 (实时)** | T+1 or T+2 | T+1 or T+2 |
 
@@ -83,13 +87,10 @@ Base 是目前基于 OP Stack 构建的增长最快的 Layer 2 网络之一。
 
 当前我们只把 Web3 支付作为收款通道，那么资金链路（即从链上 USDC 变现为法币）的成本至关重要。
 
-基于此，推荐 **Base**。
+*   **场景 A (USDC 为主)**：**首选 Base**。背靠 Coinbase，拥有最合规且几乎零磨损的法币出金通道，适合追求长期稳定运营的商家。
+*   **场景 B (USDT 为主)**：**首选 Polygon**。由于 Base 变现 USDT 需额外的 Swap 损耗，而 Polygon 在各大交易所（如 Binance/OKX）拥有最直接的 USDT 充值支持，出金路径更短。
 
-虽然 2026 年各家 L2 的转账 Gas 费差异已可忽略不计（都是厘级成本），但在商家侧的**出金体验**上，Base 优势明显。得益于 Coinbase 的原生支持，资金在 Base 链上的流转和变现拥有极低的磨损率和最高的合规性。
-
-简单来说：**如果是面向大众的商业收款场景，Base 是目前性价比最高、最省心的选择。**
-
-![用户选择](/Users/yuhang_wu/work/Yu-Doc/web3-pay-model/assets/1.png)
-![小狐狸支付](/Users/yuhang_wu/work/Yu-Doc/web3-pay-model/assets/2.png)
+![用户选择](assets/1.png)
+![小狐狸支付](assets/2.png)
 
 
