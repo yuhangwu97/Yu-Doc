@@ -1,0 +1,143 @@
+# 站内信/反馈系统 API 文档
+
+本文档描述了最新的反馈（站内信）系统 API 接口，分为 **H5 用户端** 和 **后台管理端** 两部分。
+
+## 通用数据结构
+
+### 用户类型 (UserType)
+- `1`: 普通用户 (H5端)
+- `2`: 管理员 (后台端)
+
+### 消息状态 (Status)
+- `0`: 待处理
+- `1`: 处理中
+- `2`: 已解决
+
+---
+
+## 1. H5 用户端接口
+
+### 1.1 获取反馈列表 (会话列表)
+获取当前用户的反馈会话列表。
+
+- **URL**: `/mooyuFeedback/mooyuFeedback/list`
+- **Method**: `GET`
+- **Params**:
+  - `pageNo`: 页码 (默认1)
+  - `pageSize`: 每页数量 (默认10)
+  - `createBy`: (可选) 传入当前用户名用于通过 `createBy` 筛选自己的反馈（如果系统未自动拦截）。
+  - `column`: `createTime` (建议按时间倒序)
+  - `order`: `desc`
+- **Response**: List of `MooyuFeedback` (包含 `lastContent`, `lastTime`, `isRead` 等)
+  - `isRead`: **0** 表示有管理员新回复（显示红点），**1** 表示无新消息。
+
+### 1.2 提交新反馈 (发起会话)
+用户首次提交反馈，系统会自动创建会话及第一条消息。
+
+- **URL**: `/mooyuFeedback/mooyuFeedback/add`
+- **Method**: `POST`
+- **Body** (JSON):
+```json
+{
+    "content": "这里是反馈内容...",
+    "picture": "http://img.url/1.jpg,http://img.url/2.jpg" // 可选，多张用逗号分隔
+}
+```
+
+### 1.3 查看会话详情 (消息记录)
+获取某个会话的所有聊天记录。**调用此接口会自动消除用户的未读红点 (`isRead` 置为 1)。**
+
+- **URL**: `/mooyuFeedback/mooyuFeedback/queryDetail`
+- **Method**: `GET`
+- **Params**:
+  - `id`: 反馈ID (即会话 `mooyu_feedback` 的 ID)
+  - `userType`: `1` (**必须传入 1**)
+- **Response**: List of `MooyuFeedbackRecord`
+```json
+[
+    {
+        "id": "...",
+        "feedbackId": "...",
+        "content": "第一次提问",
+        "images": "...",
+        "userType": 1, // 1用户发的消息，2管理员发的消息
+        "createTime": "2024-01-30 12:00:00"
+    },
+    {
+        "id": "...",
+        "content": "管理员回复内容",
+        "userType": 2,
+        "createTime": "2024-01-30 12:05:00"
+    }
+]
+```
+
+### 1.4 回复消息
+用户在会话中追加提问。
+
+- **URL**: `/mooyuFeedback/mooyuFeedback/reply`
+- **Method**: `POST`
+- **Body** (JSON):
+```json
+{
+    "feedbackId": "xxxxxxxx",
+    "content": "我是追加的问题...",
+    "images": "", // 可选
+    "userType": 1 // 必填，1代表用户
+}
+```
+
+---
+
+## 2. 后台管理端接口
+
+### 2.1 获取反馈列表
+管理员查看所有用户的反馈。
+
+- **URL**: `/mooyuFeedback/mooyuFeedback/list`
+- **Method**: `GET`
+- **Params**:
+  - `pageNo`: 页码
+  - `pageSize`: 每页数量
+  - `status`: (可选) 筛选状态 (0待处理, 1处理中, 2已解决)
+  - `adminReadFlag`: (可选) 筛选未读 `0` (0未读, 1已读)
+- **Response**: List of `MooyuFeedback`
+  - `adminReadFlag`: **0** 表示用户有新消息（需重点关注），**1** 表示已读。
+
+### 2.2 回复用户
+管理员回复用户的反馈。回复后，该会话状态会自动变为 **1 (处理中)**。
+
+- **URL**: `/mooyuFeedback/mooyuFeedback/reply`
+- **Method**: `POST`
+- **Body** (JSON):
+```json
+{
+    "feedbackId": "xxxxxxxx",
+    "content": "您好，您的问题已收到...",
+    "images": "",
+    "userType": 2 // 必填，2代表管理员
+}
+```
+
+### 2.3 查看会话详情
+管理员查看详细记录。**调用此接口会自动消除管理员的未读红点 (`adminReadFlag` 置为 1)。**
+
+- **URL**: `/mooyuFeedback/mooyuFeedback/queryDetail`
+- **Method**: `GET`
+- **Params**:
+  - `id`: 反馈ID
+  - `userType`: `2` (**必须传入 2**)
+- **Response**: List of `MooyuFeedbackRecord`
+
+### 2.4 手动修改状态 (可选)
+如果需要手动完结工单。
+
+- **URL**: `/mooyuFeedback/mooyuFeedback/edit`
+- **Method**: `PUT`
+- **Body**:
+```json
+{
+    "id": "xxxxxxxx",
+    "status": 2 // 2已解决
+}
+```
